@@ -1,1 +1,1 @@
-# worldle
+# discord-activity
