@@ -21,8 +21,6 @@ export const CountryList = () => {
     onNavigate: (v) => setActiveIndex(v || 0),
   });
 
-  console.log(activeIndex);
-
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions(
     [listNavigation],
   );
@@ -44,7 +42,6 @@ export const CountryList = () => {
         className="flex flex-col bg-base-200 rounded-box w-full flex-1 p-2 overflow-auto"
       >
         {counries.map((country, index) => {
-          console.log(country, activeIndex === index ? 0 : -1);
           return (
             <div
               key={`${country}-${index}`}
