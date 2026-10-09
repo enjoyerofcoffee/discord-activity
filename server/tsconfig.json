@@ -12,6 +12,7 @@
 		"isolatedModules": true,
     "strict": true,
 		"allowJs": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": { "@shared/*": ["../shared/*"] }
   }
 }
