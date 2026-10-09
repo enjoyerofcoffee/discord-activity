@@ -17,6 +17,9 @@
   color-scheme: light;
 }
 
+html,
 body {
   @apply bg-surface text-ink antialiased;
+  overflow: hidden;
+  height: 100%;
 }
