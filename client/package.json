@@ -10,16 +10,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@discord/embedded-app-sdk": "^2.5.0",
+    "add": "^2.0.9",
+    "d3-geo": "^3.1.1",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@rolldown/plugin-babel": "^0.2.3",
+    "@types/add": "^2",
     "@types/babel__core": "^7.20.5",
+    "@types/d3-geo": "^3",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@types/topojson-client": "^3",
     "@vitejs/plugin-react": "^6.1.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "oxlint": "^1.81.0",
