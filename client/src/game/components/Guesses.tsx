@@ -18,11 +18,12 @@ export const Guesses = ({ countries }: GuessesProps) => {
         return (
           <div
             key={countryCode}
-            className={`flex items-center shrink-0 h-10 px-3 rounded-sm font-bold bg-${color} ${
+            className={`flex items-center justify-between shrink-0 h-10 px-3 rounded-sm font-bold bg-${color} ${
               color === COLORS.hit ? "text-white" : "text-black"
             }`}
           >
             <span className="truncate">{name}</span>
+            <span className="tabular-nums">{Math.round(percentage)}%</span>
           </div>
         );
       })}

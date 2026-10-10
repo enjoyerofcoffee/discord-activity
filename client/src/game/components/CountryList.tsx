@@ -8,6 +8,7 @@ import {
 import { COUNTRIES } from "@shared/countries";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useGameState, useGameStateDispatch } from "../../context/GameState";
+import { getPercentage } from "../../utils";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -17,7 +18,7 @@ export const CountryList = () => {
   const [duplicate, setDuplicate] = useState(false);
 
   const dispatch = useGameStateDispatch();
-  const { status, history } = useGameState();
+  const { status, history, daily, guesses } = useGameState();
   const finished = status === "finished_won" || status === "finished_loss";
 
   const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);
@@ -115,7 +116,10 @@ export const CountryList = () => {
     setIsOpen(false);
     dispatch({
       type: "guess",
-      payload: { countryCode: countryToSubmit.code, percentage: 0 },
+      payload: {
+        countryCode: countryToSubmit.code,
+        percentage: getPercentage(daily, countryToSubmit),
+      },
     });
   };
 
