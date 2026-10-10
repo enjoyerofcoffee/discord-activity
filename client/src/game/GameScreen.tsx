@@ -15,20 +15,26 @@ export const GameScreen = () => {
   const dailyCountry = getDailyCountry();
 
   return (
-    <div className="flex flex-col h-full">
-      <img src={Header} />
+    // The players sit beside the game on wide screens, and on top of it on narrow ones
+    <div className="flex flex-col h-full md:flex-row md:gap-4">
       {status === "finished_won" && <Confetti />}
 
       <Players />
-      <GuessSquares />
-      <CountryOutline country={dailyCountry} />
-      <CountryName country={dailyCountry} />
 
-      <div className="flex gap-2 shrink-0 mb-4">
-        <CountryList />
+      <div className="flex flex-col flex-1 min-w-0 min-h-0">
+        <img className="h-12 mx-auto shrink-0 object-contain" src={Header} />
+        <GuessSquares />
+        <CountryOutline country={dailyCountry} />
+        <CountryName country={dailyCountry} />
+
+        <div className="flex flex-col w-full max-w-md mx-auto min-h-0">
+          <div className="flex gap-2 shrink-0 mb-4">
+            <CountryList />
+          </div>
+
+          <Guesses countries={history} />
+        </div>
       </div>
-
-      <Guesses countries={history} />
     </div>
   );
 };

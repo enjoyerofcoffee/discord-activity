@@ -184,7 +184,7 @@ export const CountryList = () => {
       {isOpen && (
         <div
           ref={refs.setFloating}
-          className="absolute top-12 w-full bg-white border border-black rounded-sm flex-1 overflow-auto z-100"
+          className="absolute top-12 w-full max-h-60 bg-white border border-black rounded-sm flex-1 overflow-auto z-100"
           {...getFloatingProps({
             onMouseDown: (event) => event.preventDefault(),
           })}
