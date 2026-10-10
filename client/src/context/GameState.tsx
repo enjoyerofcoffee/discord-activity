@@ -35,8 +35,8 @@ const dashboardReducer = (
 ): GameState => {
   switch (action.type) {
     case "guess": {
-      if (state.guesses >= MAX_TRIES) {
-        return { ...state, status: "finished_loss" };
+      if (state.status === "finished_won" || state.status === "finished_loss") {
+        return state;
       }
 
       if (action.payload.countryCode === state.daily.code) {
@@ -73,7 +73,7 @@ const dashboardReducer = (
         ...state,
         guesses: state.guesses + 1,
         history: [...state.history, action.payload],
-        status: "normal",
+        status: state.guesses + 1 >= MAX_TRIES ? "finished_loss" : "normal",
       };
     }
     default:

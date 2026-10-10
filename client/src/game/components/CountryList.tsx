@@ -16,6 +16,7 @@ export const CountryList = () => {
 
   const dispatch = useGameStateDispatch();
   const { status } = useGameState();
+  const finished = status === "finished_won" || status === "finished_loss";
 
   const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);
 
@@ -55,22 +56,26 @@ export const CountryList = () => {
     const value = e.currentTarget.value;
 
     setSearch(value);
-    setActiveIndex(value ? 0 : null);
+    setActiveIndex(null);
     setIsOpen(value !== "");
   };
 
+  const selected = countries.find(
+    (country) => country.toLocaleLowerCase() === search.toLocaleLowerCase(),
+  );
+
   const handleSelect = (index: number) => {
     setSearch(countries[index]);
-    setActiveIndex(0);
+    setActiveIndex(null);
     setIsOpen(false);
   };
 
   const handleSubmit = () => {
-    if (activeIndex === null || !countries[activeIndex]) {
+    if (finished || !selected) {
       return;
     }
 
-    const countryName = countries[activeIndex].toLocaleLowerCase();
+    const countryName = selected.toLocaleLowerCase();
     const countryToSubmit = COUNTRIES.find(
       (country) => country.name.toLowerCase() === countryName,
     );
@@ -92,22 +97,53 @@ export const CountryList = () => {
     <div
       className={`relative flex flex-col flex-1 shrink-0 ${status === "finished_won" && "aura aura-glow"}`}
     >
-      <input
-        value={search}
-        ref={refs.setReference}
-        type="text"
-        placeholder="France... United Kingdom..."
-        className={`input w-full h-10 ${status === "duplicate" && "input-warning"} ${status === "finished_won" && "input-success"}`}
-        {...getReferenceProps({
-          onChange: handleSearchChange,
-          onKeyDown(event) {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              handleSubmit();
-            }
-          },
-        })}
-      />
+      <div
+        className={`flex h-10 rounded-sm border bg-white overflow-hidden focus-within:ring-2 focus-within:ring-black/20 ${
+          status === "duplicate"
+            ? "border-amber-400"
+            : status === "finished_won"
+              ? "border-emerald-600"
+              : "border-black"
+        }`}
+      >
+        <input
+          value={search}
+          ref={refs.setReference}
+          type="text"
+          placeholder="France... United Kingdom..."
+          disabled={finished}
+          className="flex-1 min-w-0 px-3 bg-transparent outline-none disabled:cursor-not-allowed"
+          {...getReferenceProps({
+            onChange: handleSearchChange,
+            onKeyDown(event) {
+              if (event.key === "Enter") {
+                event.preventDefault();
+
+                if (
+                  isOpen &&
+                  activeIndex !== null &&
+                  countries[activeIndex] &&
+                  countries[activeIndex] !== selected
+                ) {
+                  handleSelect(activeIndex);
+                  return;
+                }
+
+                handleSubmit();
+              }
+            },
+          })}
+        />
+        <button
+          type="button"
+          className="px-4 bg-black text-white text-sm font-bold uppercase cursor-pointer disabled:opacity-40 disabled:cursor-default"
+          disabled={finished || !selected}
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={handleSubmit}
+        >
+          Guess
+        </button>
+      </div>
       {status === "duplicate" && (
         <label className="label mt-2" htmlFor="name">
           You have already guessed this country!
@@ -116,7 +152,7 @@ export const CountryList = () => {
       {isOpen && (
         <div
           ref={refs.setFloating}
-          className="absolute top-12 w-full bg-base-200 rounded-box flex-1 overflow-auto z-100"
+          className="absolute top-12 w-full bg-white border border-black rounded-sm flex-1 overflow-auto z-100"
           {...getFloatingProps({
             onMouseDown: (event) => event.preventDefault(),
           })}

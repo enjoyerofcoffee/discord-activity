@@ -1,7 +1,7 @@
 import { MAX_TRIES, useGameState } from "../../context/GameState";
 import { COLORS } from "../colors";
 
-const getColor = (percentage: number) => {
+export const getColor = (percentage: number) => {
   if (percentage > 66) return COLORS.hit;
   if (percentage >= 33) return COLORS.close;
   return COLORS.missed;
