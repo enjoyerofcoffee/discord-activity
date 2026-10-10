@@ -1,4 +1,5 @@
 import type { Country } from "@shared/types";
+import { getDailySeed } from "@shared/daily";
 import {
   createContext,
   useContext,
@@ -110,24 +111,26 @@ const dashboardReducer = (
 };
 
 export const GameStateProvider = ({ children }) => {
+  // Kept for the whole session, so guesses made after midnight still save to the game they belong to
+  const [seed] = useState(getDailySeed);
   const [state, dispatch] = useReducer(dashboardReducer, {
     guesses: 0,
-    daily: getDailyCountry(),
+    daily: getDailyCountry(seed),
     history: [],
     status: "normal",
   });
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    loadHistory().then((history) => {
+    loadHistory(seed).then((history) => {
       dispatch({ type: "load", payload: history });
       setLoaded(true);
     });
-  }, []);
+  }, [seed]);
 
   useEffect(() => {
-    if (loaded) saveHistory(state.history);
-  }, [loaded, state.history]);
+    if (loaded) saveHistory(seed, state.history);
+  }, [loaded, seed, state.history]);
 
   if (!loaded) return null;
 

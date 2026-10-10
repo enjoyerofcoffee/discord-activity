@@ -3,20 +3,26 @@ import { accessToken } from "./discord";
 
 // Outside of Discord there is no user, so nothing is loaded or saved.
 
-export const loadHistory = async (): Promise<History[]> => {
-  if (!accessToken) return [];
+export const loadHistory = async (seed: number): Promise<History[]> => {
+  if (!accessToken) {
+    return [];
+  }
 
-  const response = await fetch("/api/game", {
+  const response = await fetch(`/api/game?seed=${seed}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  if (!response.ok) return [];
+  if (!response.ok) {
+    return [];
+  }
 
   const { history } = await response.json();
   return history;
 };
 
-export const saveHistory = async (history: History[]) => {
-  if (!accessToken) return;
+export const saveHistory = async (seed: number, history: History[]) => {
+  if (!accessToken) {
+    return;
+  }
 
   await fetch("/api/game", {
     method: "POST",
@@ -24,6 +30,6 @@ export const saveHistory = async (history: History[]) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({ history }),
+    body: JSON.stringify({ seed, history }),
   });
 };

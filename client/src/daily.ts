@@ -1,4 +1,5 @@
 import { COUNTRIES } from "@shared/countries";
+import { getDailySeed } from "@shared/daily";
 
 // The same input always gives the same output.
 const scramble = (n: number): number => {
@@ -8,13 +9,7 @@ const scramble = (n: number): number => {
   return n % 1_000_003;
 };
 
-export const getDailyCountry = () => {
-  const now = new Date();
-  const seed =
-    now.getUTCFullYear() * 10000 +
-    (now.getUTCMonth() + 1) * 100 +
-    now.getUTCDate();
-
+export const getDailyCountry = (seed = getDailySeed()) => {
   const index = scramble(seed) % COUNTRIES.length;
   const dailyCountry = COUNTRIES[index];
 

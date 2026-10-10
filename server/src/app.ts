@@ -1,5 +1,6 @@
 import express, { type Express, type Request, type Response } from "express";
 import { createClient } from "@supabase/supabase-js";
+import { getDailySeed } from "@shared/daily";
 
 process.loadEnvFile("../.env");
 
@@ -47,7 +48,11 @@ const getUserId = async (req: Request): Promise<string | null> => {
   return user.id;
 };
 
-const getToday = () => new Date().toISOString().slice(0, 10);
+// Yesterday is allowed for players who are still playing when the day changes
+const isValidSeed = (seed: number) => {
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  return seed === getDailySeed() || seed === getDailySeed(yesterday);
+};
 
 app.get("/api/game", async (req: Request, res: Response) => {
   const userId = await getUserId(req);
@@ -56,11 +61,17 @@ app.get("/api/game", async (req: Request, res: Response) => {
     return;
   }
 
+  const seed = Number(req.query.seed);
+  if (!isValidSeed(seed)) {
+    res.status(400).send({ error: "Invalid seed" });
+    return;
+  }
+
   const { data, error } = await supabase
     .from("games")
     .select("history")
     .eq("user_id", userId)
-    .eq("date", getToday())
+    .eq("seed", seed)
     .maybeSingle();
 
   if (error) {
@@ -78,10 +89,16 @@ app.post("/api/game", async (req: Request, res: Response) => {
     return;
   }
 
-  // Replaces the row when this user already has a game saved for today
+  const { seed, history } = req.body;
+  if (!isValidSeed(seed)) {
+    res.status(400).send({ error: "Invalid seed" });
+    return;
+  }
+
+  // Replaces the row when this user already has this game saved
   const { error } = await supabase
     .from("games")
-    .upsert({ user_id: userId, date: getToday(), history: req.body.history });
+    .upsert({ user_id: userId, seed, history });
 
   if (error) {
     res.status(500).send({ error: "Could not save the game" });
