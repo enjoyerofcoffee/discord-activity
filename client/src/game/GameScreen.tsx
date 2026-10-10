@@ -1,7 +1,6 @@
 import { CountryOutline } from "./components/CountryOutline";
 import Header from "../../public/Header.png";
 import { CountryList } from "./components/CountryList";
-import WorldleIcon from "../../public/WorldleIcon.svg";
 
 export const GameScreen = () => {
   return (
@@ -12,10 +11,7 @@ export const GameScreen = () => {
       />
       <div className="flex gap-2 min-h-0 mb-4">
         <CountryList />
-        <button className="btn">
-          <img className="w-8" src={WorldleIcon}></img>
-          Guess
-        </button>
+        <button className="btn bg-emerald-600 text-white">Guess</button>
       </div>
     </div>
   );
