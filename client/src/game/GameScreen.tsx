@@ -1,5 +1,6 @@
 import { CountryOutline } from "./components/CountryOutline";
 import Header from "../../public/Header.png";
+import { CountryName } from "./components/CountryName";
 import { CountryList } from "./components/CountryList";
 import { useGameState } from "../context/GameState";
 import { Guesses } from "./components/Guesses";
@@ -19,6 +20,7 @@ export const GameScreen = () => {
 
       <GuessSquares />
       <CountryOutline country={dailyCountry} />
+      <CountryName country={dailyCountry} />
 
       <div className="flex gap-2 shrink-0 mb-4">
         <CountryList />
