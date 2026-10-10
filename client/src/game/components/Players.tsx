@@ -50,23 +50,26 @@ export const Players = () => {
   }
 
   return (
-    <div className="flex justify-center gap-3 shrink-0 overflow-x-auto mb-2">
+    <div className="flex gap-2 shrink-0 mx-auto max-w-full overflow-x-auto mb-2 md:fixed md:left-3 md:top-3 md:bottom-3 md:flex-col md:overflow-y-auto md:mb-0">
       {players.map((player) => {
         const name = player.nickname ?? player.global_name ?? player.username;
 
         return (
-          <div key={player.id} className="flex flex-col items-center gap-1 w-14">
+          <div
+            key={player.id}
+            title={name}
+            className="flex shrink-0 items-center gap-2 rounded-lg border border-base-300 bg-base-100 p-2"
+          >
             {player.avatar ? (
               <img
-                className="size-8 rounded-full"
+                className="size-10 rounded-full"
                 src={`https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.png?size=64`}
               />
             ) : (
-              <div className="flex size-8 items-center justify-center rounded-full bg-neutral text-neutral-content">
+              <div className="flex size-10 items-center justify-center rounded-full bg-neutral text-neutral-content">
                 {name[0]}
               </div>
             )}
-            <span className="w-full truncate text-center text-xs">{name}</span>
             <div className="flex gap-0.5">
               {Array.from({ length: MAX_TRIES }, (_, index) => {
                 const percentage = player.percentages[index];
@@ -74,7 +77,7 @@ export const Players = () => {
                 return (
                   <div
                     key={index}
-                    className={`size-2 rounded-xs ${
+                    className={`size-3 rounded-xs ${
                       percentage === undefined
                         ? "border border-base-400 bg-base-100"
                         : `bg-${getColor(percentage)}`
