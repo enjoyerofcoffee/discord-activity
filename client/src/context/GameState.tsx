@@ -123,10 +123,13 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    loadHistory(seed).then((history) => {
+    const load = async () => {
+      const history = await loadHistory(seed);
       dispatch({ type: "load", payload: history });
       setLoaded(true);
-    });
+    };
+
+    load();
   }, [seed]);
 
   useEffect(() => {

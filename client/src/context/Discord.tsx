@@ -16,16 +16,20 @@ export const DiscordProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!isInDiscord) return;
 
-    setupDiscord()
-      .then((user) => {
-        setUser(user);
-        setStatus("ready");
-      })
-      .catch((error) => {
+    const connect = async () => {
+      const user = await setupDiscord().catch((error) => {
         console.error(error);
         setError(error.message ?? JSON.stringify(error));
         setStatus("error");
+        return undefined;
       });
+      if (user === undefined) return;
+
+      setUser(user);
+      setStatus("ready");
+    };
+
+    connect();
   }, []);
 
   if (status === "loading") {

@@ -14,6 +14,10 @@ export type DiscordUser = Awaited<
   ReturnType<DiscordSDK["commands"]["authenticate"]>
 >["user"];
 
+export type Participant = Awaited<
+  ReturnType<DiscordSDK["commands"]["getInstanceConnectedParticipants"]>
+>["participants"][number];
+
 // Set after login, the server uses it to know who is saving a game
 export let accessToken = "";
 
@@ -43,4 +47,16 @@ export const setupDiscord = async (): Promise<DiscordUser | null> => {
   accessToken = access_token;
 
   return auth.user;
+};
+
+// Everyone who currently has the activity open in the same channel
+export const getParticipants = async (): Promise<Participant[]> => {
+  if (!discordSdk) {
+    return [];
+  }
+
+  const { participants } =
+    await discordSdk.commands.getInstanceConnectedParticipants();
+
+  return participants;
 };

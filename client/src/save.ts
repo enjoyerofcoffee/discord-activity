@@ -33,3 +33,28 @@ export const saveHistory = async (seed: number, history: History[]) => {
     body: JSON.stringify({ seed, history }),
   });
 };
+
+export type PlayerProgress = {
+  userId: string;
+  percentages: number[]; // one per guess, the guessed countries stay hidden
+};
+
+export const loadPlayers = async (
+  seed: number,
+  userIds: string[],
+): Promise<PlayerProgress[]> => {
+  if (!accessToken || userIds.length === 0) {
+    return [];
+  }
+
+  const response = await fetch(
+    `/api/players?seed=${seed}&ids=${userIds.join(",")}`,
+    { headers: { Authorization: `Bearer ${accessToken}` } },
+  );
+  if (!response.ok) {
+    return [];
+  }
+
+  const { players } = await response.json();
+  return players;
+};

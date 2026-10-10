@@ -36,13 +36,23 @@ app.post("/api/token", async (req: Request, res: Response) => {
   res.send({ access_token });
 });
 
+// Remembers who each access token belongs to, so Discord isn't asked on every request
+const userIds = new Map<string, string>();
+
 const getUserId = async (req: Request): Promise<string | null> => {
+  const token = req.headers.authorization ?? "";
+  const cached = userIds.get(token);
+  if (cached) {
+    return cached;
+  }
+
   const response = await fetch("https://discord.com/api/users/@me", {
-    headers: { Authorization: req.headers.authorization ?? "" },
+    headers: { Authorization: token },
   });
   if (!response.ok) return null;
 
   const user = await response.json();
+  userIds.set(token, user.id);
   return user.id;
 };
 
@@ -104,4 +114,41 @@ app.post("/api/game", async (req: Request, res: Response) => {
   }
 
   res.send({ ok: true });
+});
+
+app.get("/api/players", async (req: Request, res: Response) => {
+  const userId = await getUserId(req);
+  if (!userId) {
+    res.status(401).send({ error: "Not logged in" });
+    return;
+  }
+
+  const seed = Number(req.query.seed);
+  if (!isValidSeed(seed)) {
+    res.status(400).send({ error: "Invalid seed" });
+    return;
+  }
+
+  const ids = String(req.query.ids ?? "").split(",").filter(Boolean);
+
+  const { data, error } = await supabase
+    .from("games")
+    .select("user_id, history")
+    .eq("seed", seed)
+    .in("user_id", ids);
+
+  if (error) {
+    res.status(500).send({ error: "Could not load the players" });
+    return;
+  }
+
+  // Only the percentages are sent, so players can't see each other's guesses
+  const players = data.map((game) => ({
+    userId: game.user_id,
+    percentages: game.history.map(
+      (guess: { percentage: number }) => guess.percentage,
+    ),
+  }));
+
+  res.send({ players });
 });

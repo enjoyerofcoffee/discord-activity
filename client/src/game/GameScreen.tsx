@@ -7,6 +7,7 @@ import { Guesses } from "./components/Guesses";
 import { GuessSquares } from "./components/GuessSquares";
 import { getDailyCountry } from "../daily";
 import Confetti from "./components/Confetti";
+import { Players } from "./components/Players";
 
 export const GameScreen = () => {
   const { status, history } = useGameState();
@@ -18,6 +19,7 @@ export const GameScreen = () => {
       <img src={Header} />
       {status === "finished_won" && <Confetti />}
 
+      <Players />
       <GuessSquares />
       <CountryOutline country={dailyCountry} />
       <CountryName country={dailyCountry} />
