@@ -7,7 +7,7 @@ import {
 } from "@floating-ui/react";
 import { COUNTRIES } from "@shared/countries";
 import { useMemo, useRef, useState } from "react";
-import { useGameState, useGameStateDispatch } from "../../context/GameState";
+import { useGameStateDispatch } from "../../context/GameState";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -69,16 +69,23 @@ export const CountryList = () => {
       return;
     }
 
-    const countryToSubmit = countries[activeIndex].toLowerCase();
+    const countryName = countries[activeIndex].toLocaleLowerCase();
+    const countryToSubmit = COUNTRIES.find(
+      (country) => country.name.toLowerCase() === countryName,
+    );
+
+    if (!countryToSubmit) {
+      return;
+    }
 
     setSearch("");
     setActiveIndex(null);
     setIsOpen(false);
-    dispatch({ type: "guess", payload: countryToSubmit });
+    dispatch({ type: "guess", payload: countryToSubmit.code });
   };
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="relative flex flex-col flex-1 min-h-0">
       <input
         value={search}
         ref={refs.setReference}
@@ -98,7 +105,7 @@ export const CountryList = () => {
       {isOpen && (
         <div
           ref={refs.setFloating}
-          className="bg-base-200 rounded-box flex-1 overflow-auto mt-2"
+          className="absolute top-12 w-full bg-base-200 rounded-box flex-1 overflow-auto z-100"
           {...getFloatingProps({
             onMouseDown: (event) => event.preventDefault(),
           })}
