@@ -21,7 +21,7 @@ export const GuessSquares = () => {
             className={`size-6 rounded-sm ${
               guess
                 ? `bg-${getColor(guess.percentage)}`
-                : "border border-base-300 bg-base-100"
+                : "border border-base-400 bg-base-100"
             }`}
           />
         );
