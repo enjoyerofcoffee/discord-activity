@@ -1,8 +1,15 @@
+import type { Country } from "@shared/types";
 import { createContext, useContext, useReducer, type Dispatch } from "react";
+import { getDailyCountry } from "../daily";
 
 export const MAX_TRIES = 5;
 
-type Status = "normal" | "duplicate" | "error" | "finished";
+type Status =
+  | "normal"
+  | "duplicate"
+  | "error"
+  | "finished_loss"
+  | "finished_won";
 export type History = {
   countryCode: string;
   percentage: number;
@@ -10,6 +17,7 @@ export type History = {
 
 type GameState = {
   guesses: number;
+  daily: Country;
   history: History[];
   status: Status;
 };
@@ -28,14 +36,37 @@ const dashboardReducer = (
   switch (action.type) {
     case "guess": {
       if (state.guesses >= MAX_TRIES) {
-        return { ...state, status: "finished" };
+        return { ...state, status: "finished_loss" };
       }
+
+      if (action.payload.countryCode === state.daily.code) {
+        const history = state.history.some(
+          (country) => country.countryCode === state.daily.code,
+        )
+          ? [...state.history]
+          : [...state.history, action.payload];
+
+        return {
+          ...state,
+          history: history,
+          status: "finished_won",
+        };
+      }
+
       if (
         state.history.some(
           (item) => item.countryCode === action.payload.countryCode,
         )
       ) {
         return { ...state, status: "duplicate" };
+      }
+
+      if (action.payload.countryCode === state.daily.code) {
+        return {
+          ...state,
+          history: [...state.history, action.payload],
+          status: "finished_won",
+        };
       }
 
       return {
@@ -53,6 +84,7 @@ const dashboardReducer = (
 export const GameStateProvider = ({ children }) => {
   const [state, dispatch] = useReducer(dashboardReducer, {
     guesses: 0,
+    daily: getDailyCountry(),
     history: [],
     status: "normal",
   });

@@ -89,13 +89,15 @@ export const CountryList = () => {
   };
 
   return (
-    <div className="relative flex flex-col flex-1 shrink-0">
+    <div
+      className={`relative flex flex-col flex-1 shrink-0 ${status === "finished_won" && "aura aura-glow"}`}
+    >
       <input
         value={search}
         ref={refs.setReference}
         type="text"
         placeholder="France... United Kingdom..."
-        className={`input w-full h-10 ${status === "duplicate" && "input-warning"}`}
+        className={`input w-full h-10 ${status === "duplicate" && "input-warning"} ${status === "finished_won" && "input-success"}`}
         {...getReferenceProps({
           onChange: handleSearchChange,
           onKeyDown(event) {
