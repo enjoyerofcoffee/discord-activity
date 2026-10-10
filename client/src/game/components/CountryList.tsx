@@ -9,7 +9,7 @@ import { COUNTRIES } from "@shared/countries";
 import { useMemo, useRef, useState } from "react";
 
 export const CountryList = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,7 +19,7 @@ export const CountryList = () => {
 
   const { refs, context } = useFloating({
     open: isOpen,
-    onOpenChange: setIsOpen,
+    onOpenChange: (open) => setIsOpen(open && !!search.length),
   });
 
   const listNavigation = useListNavigation(context, {
@@ -48,9 +48,11 @@ export const CountryList = () => {
   const handleSearchChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
-    setSearch(e.currentTarget.value);
-    setActiveIndex(0);
-    setIsOpen(true);
+    const value = e.currentTarget.value;
+
+    setSearch(value);
+    setActiveIndex(value ? 0 : null);
+    setIsOpen(value !== "");
   };
 
   const handleSelect = (index: number) => {
@@ -60,11 +62,12 @@ export const CountryList = () => {
   };
 
   const handleSubmit = () => {
-    if (!countries[activeIndex]) {
+    if (activeIndex === null || !countries[activeIndex]) {
       return;
     }
 
     setSearch("");
+    setActiveIndex(null);
   };
 
   return (
