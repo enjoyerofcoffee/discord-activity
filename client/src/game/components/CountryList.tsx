@@ -18,7 +18,7 @@ export const CountryList = () => {
   const [duplicate, setDuplicate] = useState(false);
 
   const dispatch = useGameStateDispatch();
-  const { status, history, daily, guesses } = useGameState();
+  const { status, history, daily } = useGameState();
   const finished = status === "finished_won" || status === "finished_loss";
 
   const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);

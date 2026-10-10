@@ -9,7 +9,7 @@ import { getDailyCountry } from "../daily";
 import Confetti from "./components/Confetti";
 
 export const GameScreen = () => {
-  const { guesses, status, history } = useGameState();
+  const { status, history } = useGameState();
 
   const dailyCountry = getDailyCountry();
 

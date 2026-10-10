@@ -7,6 +7,7 @@ import {
   useReducer,
   useState,
   type Dispatch,
+  type ReactNode,
 } from "react";
 import { getDailyCountry } from "../daily";
 import { loadHistory, saveHistory } from "../save";
@@ -110,7 +111,7 @@ const dashboardReducer = (
   }
 };
 
-export const GameStateProvider = ({ children }) => {
+export const GameStateProvider = ({ children }: { children: ReactNode }) => {
   // Kept for the whole session, so guesses made after midnight still save to the game they belong to
   const [seed] = useState(getDailySeed);
   const [state, dispatch] = useReducer(dashboardReducer, {

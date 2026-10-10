@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "yarn@4.6.0",
   "scripts": {
-    "dev": "tsx src/app.ts"
+    "dev": "tsx --env-file=../.env src/dev.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

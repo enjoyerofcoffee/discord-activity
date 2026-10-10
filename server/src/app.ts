@@ -1,15 +1,13 @@
 import express, { type Express, type Request, type Response } from "express";
 import { createClient } from "@supabase/supabase-js";
-import { getDailySeed } from "@shared/daily";
-
-process.loadEnvFile("../.env");
+import { getDailySeed } from "../../shared/daily.ts";
 
 const supabase = createClient(
   process.env.SUPABASE_URL ?? "",
   process.env.SUPABASE_SECRET_KEY ?? "",
 );
 
-const app: Express = express();
+export const app: Express = express();
 
 app.use(express.json());
 
@@ -107,5 +105,3 @@ app.post("/api/game", async (req: Request, res: Response) => {
 
   res.send({ ok: true });
 });
-
-app.listen(3000);

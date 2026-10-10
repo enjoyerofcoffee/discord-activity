@@ -2693,6 +2693,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"serverless-http@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "serverless-http@npm:4.0.0"
+  checksum: 10c0/e613beb1c93a331281fb0302423907531d9d197e7f7fef94466e22d350bb48b72e6020d39b5c7569a2d6736fde945cb198ed1d12001bfc9e82a5de791bb84c7d
+  languageName: node
+  linkType: hard
+
 "setprototypeof@npm:~1.2.0":
   version: 1.2.0
   resolution: "setprototypeof@npm:1.2.0"
@@ -3016,6 +3023,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "worldle@workspace:."
   dependencies:
+    serverless-http: "npm:^4.0.0"
     tsx: "npm:^4.23.15"
   languageName: unknown
   linkType: soft
