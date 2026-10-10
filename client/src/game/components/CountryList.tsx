@@ -7,7 +7,6 @@ import {
 } from "@floating-ui/react";
 import { COUNTRIES } from "@shared/countries";
 import { useMemo, useRef, useState } from "react";
-import WorldleIcon from "../../../public/WorldleIcon.svg";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -69,53 +68,47 @@ export const CountryList = () => {
   };
 
   return (
-    <div className="flex gap-2 min-h-0 mb-4">
-      <div className="flex flex-col flex-1 min-h-0">
-        <input
-          value={search}
-          ref={refs.setReference}
-          type="text"
-          placeholder="France... United Kingdom..."
-          className="input w-full"
-          {...getReferenceProps({
-            onChange: handleSearchChange,
-            onKeyDown(event) {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                handleSubmit();
-              }
-            },
+    <div className="flex flex-col flex-1 min-h-0">
+      <input
+        value={search}
+        ref={refs.setReference}
+        type="text"
+        placeholder="France... United Kingdom..."
+        className="input w-full"
+        {...getReferenceProps({
+          onChange: handleSearchChange,
+          onKeyDown(event) {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              handleSubmit();
+            }
+          },
+        })}
+      />
+      {isOpen && (
+        <div
+          ref={refs.setFloating}
+          className="bg-base-200 rounded-box flex-1 overflow-auto mt-2"
+          {...getFloatingProps({
+            onMouseDown: (event) => event.preventDefault(),
           })}
-        />
-        {isOpen && (
-          <div
-            ref={refs.setFloating}
-            className="bg-base-200 rounded-box flex-1 overflow-auto mt-2"
-            {...getFloatingProps({
-              onMouseDown: (event) => event.preventDefault(),
-            })}
-          >
-            {countries.map((country, index) => (
-              <div
-                key={`${country}-${index}`}
-                className={`hover:bg-gray-200 p-2 ${activeIndex === index && "bg-gray-200"}`}
-                ref={(node) => {
-                  listRef.current[index] = node;
-                }}
-                {...getItemProps({
-                  onClick: () => handleSelect(index),
-                })}
-              >
-                {country}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <button className="btn">
-        <img className="w-8" src={WorldleIcon}></img>
-        Guess
-      </button>
+        >
+          {countries.map((country, index) => (
+            <div
+              key={`${country}-${index}`}
+              className={`hover:bg-gray-200 p-2 ${activeIndex === index && "bg-gray-200"}`}
+              ref={(node) => {
+                listRef.current[index] = node;
+              }}
+              {...getItemProps({
+                onClick: () => handleSelect(index),
+              })}
+            >
+              {country}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
