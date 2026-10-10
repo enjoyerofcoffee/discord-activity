@@ -11,10 +11,11 @@ import WorldleIcon from "../../../public/WorldleIcon.svg";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [search, setSearch] = useState<string>("");
+  const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const guessBtnRef = useRef<HTMLButtonElement>(null);
+  const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);
+
   const listRef = useRef<Array<HTMLElement | null>>([]);
 
   const { refs, context } = useFloating({
@@ -37,34 +38,34 @@ export const CountryList = () => {
     [listNavigation, focus, role],
   );
 
+  const countries = useMemo(() => {
+    const query = search.toLocaleLowerCase();
+
+    return COUNTRY_NAMES.filter((country) =>
+      country.toLocaleLowerCase().includes(query),
+    );
+  }, [search]);
+
   const handleSearchChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
     setSearch(e.currentTarget.value);
     setActiveIndex(0);
+    setIsOpen(true);
   };
 
-  const countries = useMemo(() => {
-    const countryNames = COUNTRIES.map((country) => country.name);
+  const handleSelect = (index: number) => {
+    setSearch(countries[index]);
+    setActiveIndex(0);
+    setIsOpen(false);
+  };
 
-    return countryNames.filter((country) =>
-      country.toLocaleLowerCase().includes(search),
-    );
-  }, [search]);
-
-  const handleSelect = () => {
-    const countryToSubmit = countries[activeIndex]?.toLowerCase();
-    const countryFound = countries.some(
-      (country) => country.toLocaleLowerCase() === countryToSubmit,
-    );
-
-    if (!countryFound) {
+  const handleSubmit = () => {
+    if (!countries[activeIndex]) {
       return;
     }
 
-    setIsOpen(false);
-    setSearch(countries[activeIndex]);
-    guessBtnRef.current?.focus();
+    setSearch("");
   };
 
   return (
@@ -76,12 +77,12 @@ export const CountryList = () => {
           type="text"
           placeholder="France... United Kingdom..."
           className="input w-full"
-          onChange={handleSearchChange}
           {...getReferenceProps({
+            onChange: handleSearchChange,
             onKeyDown(event) {
               if (event.key === "Enter") {
                 event.preventDefault();
-                handleSelect();
+                handleSubmit();
               }
             },
           })}
@@ -89,27 +90,29 @@ export const CountryList = () => {
         {isOpen && (
           <div
             ref={refs.setFloating}
-            {...getFloatingProps({})}
-            className="bg-base-200 rounded-box flex-1 overflow-auto"
-          >
-            {countries.map((country, index) => {
-              return (
-                <div
-                  key={`${country}-${index}`}
-                  className={`text-lg hover:bg-gray-200 p-2 ${activeIndex === index && "bg-gray-200"}`}
-                  ref={(node) => {
-                    listRef.current[index] = node;
-                  }}
-                  {...getItemProps({})}
-                >
-                  {country}
-                </div>
-              );
+            className="bg-base-200 rounded-box flex-1 overflow-auto mt-2"
+            {...getFloatingProps({
+              onMouseDown: (event) => event.preventDefault(),
             })}
+          >
+            {countries.map((country, index) => (
+              <div
+                key={`${country}-${index}`}
+                className={`hover:bg-gray-200 p-2 ${activeIndex === index && "bg-gray-200"}`}
+                ref={(node) => {
+                  listRef.current[index] = node;
+                }}
+                {...getItemProps({
+                  onClick: () => handleSelect(index),
+                })}
+              >
+                {country}
+              </div>
+            ))}
           </div>
         )}
       </div>
-      <button ref={guessBtnRef} className="btn">
+      <button className="btn">
         <img className="w-8" src={WorldleIcon}></img>
         Guess
       </button>
