@@ -21,13 +21,13 @@ export const GameScreen = () => {
 
       <Players />
 
-      <div className="flex flex-col flex-1 min-w-0 min-h-0">
+      <div className="flex flex-col flex-1 min-w-0 min-h-0 overflow-y-auto">
         <img className="h-12 mx-auto shrink-0 object-contain" src={Header} />
         <GuessSquares />
         <CountryOutline country={dailyCountry} />
         <CountryName country={dailyCountry} />
 
-        <div className="flex flex-col w-full max-w-md mx-auto min-h-0">
+        <div className="flex flex-col w-full max-w-md mx-auto shrink-0">
           <div className="flex gap-2 shrink-0 mb-4">
             <CountryList />
           </div>

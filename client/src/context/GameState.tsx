@@ -12,7 +12,7 @@ import {
 import { getDailyCountry } from "../daily";
 import { loadHistory, saveHistory } from "../save";
 
-export const MAX_TRIES = 5;
+export const MAX_TRIES = 6;
 
 type Status =
   | "normal"
