@@ -1,6 +1,14 @@
 import type { Country } from "@shared/types";
-import { createContext, useContext, useReducer, type Dispatch } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+  type Dispatch,
+} from "react";
 import { getDailyCountry } from "../daily";
+import { loadHistory, saveHistory } from "../save";
 
 export const MAX_TRIES = 5;
 
@@ -23,7 +31,9 @@ type GameState = {
   status: Status;
 };
 
-type GameStateAction = { type: "guess"; payload: History };
+type GameStateAction =
+  | { type: "guess"; payload: History }
+  | { type: "load"; payload: History[] };
 
 const GameStateContext = createContext<GameState | undefined>(undefined);
 const GameStateDispatchContext = createContext<
@@ -35,6 +45,23 @@ const dashboardReducer = (
   action: GameStateAction,
 ): GameState => {
   switch (action.type) {
+    case "load": {
+      // Rebuild the game from the guesses saved on the server
+      const history = action.payload;
+      const won = history.some((item) => item.countryCode === state.daily.code);
+      const guesses = won ? history.length - 1 : history.length;
+
+      return {
+        ...state,
+        guesses: guesses,
+        history: history,
+        status: won
+          ? "finished_won"
+          : guesses >= MAX_TRIES
+            ? "finished_loss"
+            : "normal",
+      };
+    }
     case "guess": {
       if (state.status === "finished_won" || state.status === "finished_loss") {
         return state;
@@ -89,6 +116,20 @@ export const GameStateProvider = ({ children }) => {
     history: [],
     status: "normal",
   });
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    loadHistory().then((history) => {
+      dispatch({ type: "load", payload: history });
+      setLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (loaded) saveHistory(state.history);
+  }, [loaded, state.history]);
+
+  if (!loaded) return null;
 
   return (
     <GameStateContext value={state}>

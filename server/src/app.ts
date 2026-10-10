@@ -1,6 +1,12 @@
 import express, { type Express, type Request, type Response } from "express";
+import { createClient } from "@supabase/supabase-js";
 
 process.loadEnvFile("../.env");
+
+const supabase = createClient(
+  process.env.SUPABASE_URL ?? "",
+  process.env.SUPABASE_SECRET_KEY ?? "",
+);
 
 const app: Express = express();
 
@@ -29,6 +35,60 @@ app.post("/api/token", async (req: Request, res: Response) => {
 
   const { access_token } = await response.json();
   res.send({ access_token });
+});
+
+const getUserId = async (req: Request): Promise<string | null> => {
+  const response = await fetch("https://discord.com/api/users/@me", {
+    headers: { Authorization: req.headers.authorization ?? "" },
+  });
+  if (!response.ok) return null;
+
+  const user = await response.json();
+  return user.id;
+};
+
+const getToday = () => new Date().toISOString().slice(0, 10);
+
+app.get("/api/game", async (req: Request, res: Response) => {
+  const userId = await getUserId(req);
+  if (!userId) {
+    res.status(401).send({ error: "Not logged in" });
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("games")
+    .select("history")
+    .eq("user_id", userId)
+    .eq("date", getToday())
+    .maybeSingle();
+
+  if (error) {
+    res.status(500).send({ error: "Could not load the game" });
+    return;
+  }
+
+  res.send({ history: data?.history ?? [] });
+});
+
+app.post("/api/game", async (req: Request, res: Response) => {
+  const userId = await getUserId(req);
+  if (!userId) {
+    res.status(401).send({ error: "Not logged in" });
+    return;
+  }
+
+  // Replaces the row when this user already has a game saved for today
+  const { error } = await supabase
+    .from("games")
+    .upsert({ user_id: userId, date: getToday(), history: req.body.history });
+
+  if (error) {
+    res.status(500).send({ error: "Could not save the game" });
+    return;
+  }
+
+  res.send({ ok: true });
 });
 
 app.listen(3000);

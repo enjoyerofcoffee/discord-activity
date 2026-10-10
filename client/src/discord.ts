@@ -14,6 +14,9 @@ export type DiscordUser = Awaited<
   ReturnType<DiscordSDK["commands"]["authenticate"]>
 >["user"];
 
+// Set after login, the server uses it to know who is saving a game
+export let accessToken = "";
+
 export const setupDiscord = async (): Promise<DiscordUser | null> => {
   if (!discordSdk) return null;
 
@@ -37,6 +40,7 @@ export const setupDiscord = async (): Promise<DiscordUser | null> => {
 
   const { access_token } = await response.json();
   const auth = await discordSdk.commands.authenticate({ access_token });
+  accessToken = access_token;
 
   return auth.user;
 };
