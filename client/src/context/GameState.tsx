@@ -23,7 +23,7 @@ type Status =
 export type History = {
   countryCode: string;
   percentage: number;
-  arrow: number | null; // bearing in degrees from guess to answer, null when correct
+  arrow: number | null;
 };
 
 type GameState = {
@@ -48,7 +48,6 @@ const dashboardReducer = (
 ): GameState => {
   switch (action.type) {
     case "load": {
-      // Rebuild the game from the guesses saved on the server
       const history = action.payload;
       const won = history.some((item) => item.countryCode === state.daily.code);
       const guesses = won ? history.length - 1 : history.length;
@@ -112,7 +111,6 @@ const dashboardReducer = (
 };
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
-  // Kept for the whole session, so guesses made after midnight still save to the game they belong to
   const [seed] = useState(getDailySeed);
   const [state, dispatch] = useReducer(dashboardReducer, {
     guesses: 0,

@@ -36,7 +36,6 @@ app.post("/api/token", async (req: Request, res: Response) => {
   res.send({ access_token });
 });
 
-// Remembers who each access token belongs to, so Discord isn't asked on every request
 const userIds = new Map<string, string>();
 
 const getUserId = async (req: Request): Promise<string | null> => {
@@ -56,7 +55,6 @@ const getUserId = async (req: Request): Promise<string | null> => {
   return user.id;
 };
 
-// Yesterday is allowed for players who are still playing when the day changes
 const isValidSeed = (seed: number) => {
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
   return seed === getDailySeed() || seed === getDailySeed(yesterday);
@@ -103,7 +101,6 @@ app.post("/api/game", async (req: Request, res: Response) => {
     return;
   }
 
-  // Replaces the row when this user already has this game saved
   const { error } = await supabase
     .from("games")
     .upsert({ user_id: userId, seed, history });
@@ -129,7 +126,9 @@ app.get("/api/players", async (req: Request, res: Response) => {
     return;
   }
 
-  const ids = String(req.query.ids ?? "").split(",").filter(Boolean);
+  const ids = String(req.query.ids ?? "")
+    .split(",")
+    .filter(Boolean);
 
   const { data, error } = await supabase
     .from("games")
@@ -142,7 +141,6 @@ app.get("/api/players", async (req: Request, res: Response) => {
     return;
   }
 
-  // Only the percentages are sent, so players can't see each other's guesses
   const players = data.map((game) => ({
     userId: game.user_id,
     percentages: game.history.map(

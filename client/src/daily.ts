@@ -1,7 +1,6 @@
 import { COUNTRIES } from "@shared/countries";
 import { getDailySeed } from "@shared/daily";
 
-// The same input always gives the same output.
 const scramble = (n: number): number => {
   n = n * 7919;
   n = n % 1_000_003;

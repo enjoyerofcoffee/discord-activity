@@ -50,7 +50,7 @@ export const Players = () => {
   }
 
   return (
-    <div className="flex gap-2 shrink-0 mx-auto max-w-full overflow-x-auto mt-2 md:mx-0 md:mt-0 md:py-3 md:flex-col md:overflow-y-auto">
+    <div className="flex gap-2 shrink-0 mx-auto max-w-full overflow-x-auto mt-2 md:fixed md:left-3 md:top-3 md:bottom-3 md:mt-0 md:flex-col md:overflow-y-auto">
       {players.map((player) => {
         const name = player.nickname ?? player.global_name ?? player.username;
 

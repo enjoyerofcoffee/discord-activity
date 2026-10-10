@@ -15,8 +15,7 @@ export const GameScreen = () => {
   const dailyCountry = getDailyCountry();
 
   return (
-    // The players sit beside the game on wide screens, and on top of it on narrow ones
-    <div className="flex flex-col h-full md:flex-row md:gap-4">
+    <div className="flex flex-col h-full">
       {status === "finished_won" && <Confetti />}
 
       <Players />

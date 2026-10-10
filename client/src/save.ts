@@ -1,8 +1,6 @@
 import type { History } from "./context/GameState";
 import { accessToken } from "./discord";
 
-// Outside of Discord there is no user, so nothing is loaded or saved.
-
 export const loadHistory = async (seed: number): Promise<History[]> => {
   if (!accessToken) {
     return [];

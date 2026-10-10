@@ -1,4 +1,3 @@
-// Clockwise from north, one per 45°
 const ARROWS = ["⬆️", "↗️", "➡️", "↘️", "⬇️", "↙️", "⬅️", "↖️"];
 
 type ArrowProps = {

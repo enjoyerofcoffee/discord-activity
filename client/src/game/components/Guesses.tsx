@@ -9,14 +9,16 @@ type GuessesProps = {
 };
 export const Guesses = ({ countries }: GuessesProps) => {
   return (
-    // Every slot is drawn from the start, so nothing moves when a guess is added
     <div className="grid grid-cols-3 gap-1 shrink-0 pb-2">
       {Array.from({ length: MAX_TRIES }, (_, index) => {
         const guess = countries[index];
 
         if (!guess) {
           return (
-            <div key={index} className="h-12 rounded-sm border border-base-300" />
+            <div
+              key={index}
+              className="h-12 rounded-sm border border-base-300"
+            />
           );
         }
 

@@ -29,12 +29,6 @@ const DEFAULT_COLORS = [
   "#ff9800",
 ];
 
-/**
- * Fires a single burst of confetti when mounted, then removes itself.
- * No dependencies.
- *
- * Usage: {showConfetti && <Confetti />}
- */
 export default function Confetti({
   particleCount = 150,
   duration = 3000,
@@ -42,7 +36,7 @@ export default function Confetti({
   onDone,
 }: ConfettiProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const firedRef = useRef(false); // guards against double-firing in StrictMode
+  const firedRef = useRef(false);
 
   useEffect(() => {
     if (firedRef.current) return;
@@ -66,7 +60,6 @@ export default function Confetti({
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // Burst from the top-centre, spraying downward in a wide fan
     const particles: Particle[] = Array.from({ length: particleCount }, () => {
       const angle = Math.PI / 2 + (Math.random() - 0.5) * (Math.PI * 0.9);
       const speed = 6 + Math.random() * 14;
@@ -109,7 +102,7 @@ export default function Confetti({
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rotation);
-        ctx.scale(1, Math.cos(p.tilt)); // flutter effect
+        ctx.scale(1, Math.cos(p.tilt));
         ctx.fillStyle = p.color;
         ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
         ctx.restore();
