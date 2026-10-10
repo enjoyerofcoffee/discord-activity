@@ -9,10 +9,8 @@ export const Guesses = ({ countries }: GuessesProps) => {
     countries.includes(country.code),
   ).map((country) => country.name);
 
-  console.log(`bg-${COLORS.close}`);
-
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 min-h-0 overflow-auto pb-2">
       {countryNames.map((name) => {
         return (
           <div key={name} className={`card bg-${COLORS.close} shadow-sm`}>

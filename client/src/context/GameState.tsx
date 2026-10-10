@@ -1,14 +1,20 @@
 import { createContext, useContext, useReducer, type Dispatch } from "react";
 
+export const MAX_TRIES = 5;
+
 type Status = "normal" | "duplicate" | "error" | "finished";
+type History = {
+  countryCode: string;
+  percentage: number;
+};
 
 type GameState = {
   guesses: number;
-  history: string[];
+  history: History[];
   status: Status;
 };
 
-type GameStateAction = { type: "guess"; payload: string };
+type GameStateAction = { type: "guess"; payload: History };
 
 const GameStateContext = createContext<GameState | undefined>(undefined);
 const GameStateDispatchContext = createContext<
@@ -21,10 +27,14 @@ const dashboardReducer = (
 ): GameState => {
   switch (action.type) {
     case "guess": {
-      if (state.guesses >= 6) {
+      if (state.guesses >= MAX_TRIES) {
         return { ...state, status: "finished" };
       }
-      if (state.history.includes(action.payload)) {
+      if (
+        state.history.some(
+          (item) => item.countryCode === action.payload.countryCode,
+        )
+      ) {
         return { ...state, status: "duplicate" };
       }
 

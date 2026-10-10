@@ -13,8 +13,7 @@ export const GameScreen = () => {
       <CountryOutline
         country={{ code: "FR", name: "France", lat: 46.6, lon: 2.4 }}
       />
-      {guesses} - {status}
-      <div className="flex gap-2 min-h-0 mb-4">
+      <div className="flex gap-2 shrink-0 mb-4">
         <CountryList />
       </div>
       <Guesses countries={history} />

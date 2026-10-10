@@ -81,17 +81,20 @@ export const CountryList = () => {
     setSearch("");
     setActiveIndex(null);
     setIsOpen(false);
-    dispatch({ type: "guess", payload: countryToSubmit.code });
+    dispatch({
+      type: "guess",
+      payload: { countryCode: countryToSubmit.code, percentage: 0 },
+    });
   };
 
   return (
-    <div className="relative flex flex-col flex-1 min-h-0">
+    <div className="relative flex flex-col flex-1 shrink-0">
       <input
         value={search}
         ref={refs.setReference}
         type="text"
         placeholder="France... United Kingdom..."
-        className="input w-full"
+        className="input w-full h-10"
         {...getReferenceProps({
           onChange: handleSearchChange,
           onKeyDown(event) {
