@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* COLORS in game/colors.ts are applied as `bg-${color}`, which Tailwind can't detect */
+@source inline("bg-{emerald-600,slate-400,amber-400}");
 @plugin "daisyui" {
   themes:
     light --default,

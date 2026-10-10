@@ -1,12 +1,13 @@
 import { COUNTRIES } from "@shared/countries";
 import { COLORS } from "../colors";
+import { type History } from "../../context/GameState";
 
 type GuessesProps = {
-  countries: string[];
+  countries: History[];
 };
 export const Guesses = ({ countries }: GuessesProps) => {
   const countryNames = COUNTRIES.filter((country) =>
-    countries.includes(country.code),
+    countries.some((c) => c.countryCode === country.code),
   ).map((country) => country.name);
 
   return (

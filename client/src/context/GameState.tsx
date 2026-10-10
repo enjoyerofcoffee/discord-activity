@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer, type Dispatch } from "react";
 export const MAX_TRIES = 5;
 
 type Status = "normal" | "duplicate" | "error" | "finished";
-type History = {
+export type History = {
   countryCode: string;
   percentage: number;
 };
