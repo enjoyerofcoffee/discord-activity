@@ -7,7 +7,7 @@ import {
 } from "@floating-ui/react";
 import { COUNTRIES } from "@shared/countries";
 import { useMemo, useRef, useState } from "react";
-import { useGameStateDispatch } from "../../context/GameState";
+import { useGameState, useGameStateDispatch } from "../../context/GameState";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -15,6 +15,7 @@ export const CountryList = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dispatch = useGameStateDispatch();
+  const { status } = useGameState();
 
   const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);
 
@@ -94,7 +95,7 @@ export const CountryList = () => {
         ref={refs.setReference}
         type="text"
         placeholder="France... United Kingdom..."
-        className="input w-full h-10"
+        className={`input w-full h-10 ${status === "duplicate" && "input-warning"}`}
         {...getReferenceProps({
           onChange: handleSearchChange,
           onKeyDown(event) {
@@ -105,6 +106,11 @@ export const CountryList = () => {
           },
         })}
       />
+      {status === "duplicate" && (
+        <label className="label mt-2" htmlFor="name">
+          You have already guessed this country!
+        </label>
+      )}
       {isOpen && (
         <div
           ref={refs.setFloating}
