@@ -68,6 +68,7 @@ export const CountryList = () => {
 
     setSearch("");
     setActiveIndex(null);
+    setIsOpen(false);
   };
 
   return (
