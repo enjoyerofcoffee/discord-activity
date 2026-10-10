@@ -7,11 +7,14 @@ import {
 } from "@floating-ui/react";
 import { COUNTRIES } from "@shared/countries";
 import { useMemo, useRef, useState } from "react";
+import { useGameState, useGameStateDispatch } from "../../context/GameState";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useGameStateDispatch();
 
   const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);
 
@@ -66,9 +69,12 @@ export const CountryList = () => {
       return;
     }
 
+    const countryToSubmit = countries[activeIndex].toLowerCase();
+
     setSearch("");
     setActiveIndex(null);
     setIsOpen(false);
+    dispatch({ type: "guess", payload: countryToSubmit });
   };
 
   return (
