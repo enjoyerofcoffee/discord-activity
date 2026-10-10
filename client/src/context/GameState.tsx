@@ -13,6 +13,7 @@ type Status =
 export type History = {
   countryCode: string;
   percentage: number;
+  arrow: number | null; // bearing in degrees from guess to answer, null when correct
 };
 
 type GameState = {

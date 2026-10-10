@@ -8,7 +8,7 @@ import {
 import { COUNTRIES } from "@shared/countries";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useGameState, useGameStateDispatch } from "../../context/GameState";
-import { getPercentage } from "../../utils";
+import { getArrow, getPercentage } from "../../utils";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -118,7 +118,8 @@ export const CountryList = () => {
       type: "guess",
       payload: {
         countryCode: countryToSubmit.code,
-        percentage: getPercentage(daily, countryToSubmit),
+        percentage: getPercentage(countryToSubmit, daily),
+        arrow: getArrow(countryToSubmit, daily),
       },
     });
   };

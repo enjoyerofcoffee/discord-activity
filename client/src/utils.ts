@@ -17,3 +17,20 @@ export const getPercentage = (guess: Country, answer: Country): number => {
   // 0 km away = 100%, 20,000 km away (other side of the world) = 0%
   return Math.floor((1 - distanceKm / 20000) * 100);
 };
+
+export const getArrow = (guess: Country, answer: Country): number | null => {
+  if (guess.code === answer.code) return null;
+
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const lat1 = toRad(guess.lat);
+  const lat2 = toRad(answer.lat);
+
+  let dLon = toRad(answer.lon - guess.lon);
+  if (Math.abs(dLon) > Math.PI) dLon -= Math.sign(dLon) * 2 * Math.PI;
+
+  const dPsi = Math.log(
+    Math.tan(Math.PI / 4 + lat2 / 2) / Math.tan(Math.PI / 4 + lat1 / 2),
+  );
+
+  return ((Math.atan2(dLon, dPsi) * 180) / Math.PI + 360) % 360;
+};
