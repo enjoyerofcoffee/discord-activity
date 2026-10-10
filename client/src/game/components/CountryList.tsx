@@ -6,16 +6,18 @@ import {
   useRole,
 } from "@floating-ui/react";
 import { COUNTRIES } from "@shared/countries";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGameState, useGameStateDispatch } from "../../context/GameState";
 
 export const CountryList = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [shaking, setShaking] = useState(false);
+  const [duplicate, setDuplicate] = useState(false);
 
   const dispatch = useGameStateDispatch();
-  const { status } = useGameState();
+  const { status, history } = useGameState();
   const finished = status === "finished_won" || status === "finished_loss";
 
   const COUNTRY_NAMES = COUNTRIES.map((country) => country.name);
@@ -50,6 +52,16 @@ export const CountryList = () => {
     );
   }, [search]);
 
+  useEffect(() => {
+    if (!duplicate) {
+      return;
+    }
+
+    const timeout = setTimeout(() => setDuplicate(false), 2000);
+
+    return () => clearTimeout(timeout);
+  }, [duplicate]);
+
   const handleSearchChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
@@ -71,7 +83,12 @@ export const CountryList = () => {
   };
 
   const handleSubmit = () => {
-    if (finished || !selected) {
+    if (finished || !search) {
+      return;
+    }
+
+    if (!selected) {
+      setShaking(true);
       return;
     }
 
@@ -82,6 +99,15 @@ export const CountryList = () => {
 
     if (!countryToSubmit) {
       return;
+    }
+
+    const isDuplicate = history.some(
+      (guess) => guess.countryCode === countryToSubmit.code,
+    );
+
+    setDuplicate(isDuplicate);
+    if (isDuplicate) {
+      setShaking(true);
     }
 
     setSearch("");
@@ -98,8 +124,9 @@ export const CountryList = () => {
       className={`relative flex flex-col flex-1 shrink-0 ${status === "finished_won" && "aura aura-glow"}`}
     >
       <div
-        className={`flex h-10 rounded-sm border bg-white overflow-hidden focus-within:ring-2 focus-within:ring-black/20 ${
-          status === "duplicate"
+        onAnimationEnd={() => setShaking(false)}
+        className={`flex h-10 rounded-sm border bg-white overflow-hidden focus-within:ring-2 focus-within:ring-black/20 ${shaking ? "animate-shake" : ""} ${
+          duplicate
             ? "border-amber-400"
             : status === "finished_won"
               ? "border-emerald-600"
@@ -144,7 +171,7 @@ export const CountryList = () => {
           Guess
         </button>
       </div>
-      {status === "duplicate" && (
+      {duplicate && (
         <label className="label mt-2" htmlFor="name">
           You have already guessed this country!
         </label>
